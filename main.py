@@ -147,3 +147,13 @@ def score_position(board, piece):
             score += evaluate_window(window, piece)
 
     return score
+
+def get_valid_locations(board):
+    valid_locations = []
+    for col in range(COLUMN_COUNT):
+        if is_valid_location(board, col):
+            valid_locations.append(col)
+    return valid_locations
+
+def is_terminal_node(board):
+    return winning_move(board, 1) or winning_move(board, 2) or len(get_valid_locations(board)) == 0
