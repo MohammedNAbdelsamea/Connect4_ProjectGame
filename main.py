@@ -1,5 +1,7 @@
 import numpy as np
 import pygame
+import math
+import random
 import tkinter as tk
 from tkinter import messagebox
 import matplotlib.pyplot as plt
@@ -157,3 +159,90 @@ def get_valid_locations(board):
 
 def is_terminal_node(board):
     return winning_move(board, 1) or winning_move(board, 2) or len(get_valid_locations(board)) == 0
+
+def minimax(board, depth, maximizing_player):
+    valid_locations = get_valid_locations(board)
+    terminal_node = is_terminal_node(board)
+
+    if depth == 0 or terminal_node:
+        if terminal_node:
+            if winning_move(board, 2):
+                return (None, 100000000000000)
+            elif winning_move(board, 1):
+                return (None, -10000000000000)
+            else:  # Game is over, no more valid moves
+                return (None, 0)
+        else:  # Depth is zero
+            return (None, score_position(board, 2))
+
+    if maximizing_player:
+        value = -math.inf
+        column = random.choice(valid_locations)
+        for col in valid_locations:
+            row = get_next_open_row(board, col)
+            temp_board = board.copy()
+            drop_piece(temp_board, row, col, 2)
+            new_score = minimax(temp_board, depth - 1, False)[1]
+            if new_score > value:
+                value = new_score
+                column = col
+        return column, value
+    else:  # Minimizing player
+        value = math.inf
+        column = random.choice(valid_locations)
+        for col in valid_locations:
+            row = get_next_open_row(board, col)
+            temp_board = board.copy()
+            drop_piece(temp_board, row, col, 1)
+            new_score = minimax(temp_board, depth - 1, True)[1]
+            if new_score < value:
+                value = new_score
+                column = col
+        return column, value
+
+#################################################################
+def minimax_ab(board, depth, alpha, beta, maximizing_player):
+    valid_locations = get_valid_locations(board)
+    terminal_node = is_terminal_node(board)
+
+    if depth == 0 or terminal_node:
+        if terminal_node:
+            if winning_move(board, 2):
+                return (None, 100000000000000)
+            elif winning_move(board, 1):
+                return (None, -10000000000000)
+            else:  # Game is over, no more valid moves
+                return (None, 0)
+        else:  # Depth is zero
+            return (None, score_position(board, 2))
+
+    if maximizing_player:
+        value = -math.inf
+        column = random.choice(valid_locations)
+        for col in valid_locations:
+            row = get_next_open_row(board, col)
+            temp_board = board.copy()
+            drop_piece(temp_board, row, col, 2)
+            new_score = minimax_ab(temp_board, depth - 1, alpha, beta, False)[1]
+            if new_score > value:
+                value = new_score
+                column = col
+            alpha = max(alpha, value)
+            if alpha >= beta:
+                break
+        return column, value
+    else:  # Minimizing player
+        value = math.inf
+        column = random.choice(valid_locations)
+        for col in valid_locations:
+            row = get_next_open_row(board, col)
+            temp_board = board.copy()
+            drop_piece(temp_board, row, col, 1)
+            new_score = minimax_ab(temp_board, depth - 1, alpha, beta, True)[1]
+            if new_score < value:
+                value = new_score
+                column = col
+            beta = min(beta, value)
+            if alpha >= beta:
+                break
+        return column, value
