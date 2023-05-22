@@ -18,20 +18,20 @@ COLUMN_COUNT = 7
 PLAYER = 1
 AI = 2
 
-# Define our screen size
-SQUARESIZE = 100
-
-# Define width and height of board
-width = COLUMN_COUNT * SQUARESIZE
-height = (ROW_COUNT + 1) * SQUARESIZE
-
-# Initialize pygame
-pygame.init()
-size = (width, height)
-
-RADIUS = int(SQUARESIZE / 2 - 5)
-
-screen = pygame.display.set_mode(size)
+# # Define our screen size
+# SQUARESIZE = 100
+#
+# # Define width and height of board
+# width = COLUMN_COUNT * SQUARESIZE
+# height = (ROW_COUNT + 1) * SQUARESIZE
+#
+# # Initialize pygame
+# pygame.init()
+# size = (width, height)
+#
+# RADIUS = int(SQUARESIZE / 2 - 5)
+#
+# screen = pygame.display.set_mode(size)
 
 minimax_scores_g = []
 minimax_ab_scores_g = []
@@ -206,7 +206,31 @@ def get_valid_locations(board):
     return valid_locations
 
 ############################################################################
+board = create_board()
+print_board(board)
+game_over = False
+turn = 0
 
+# Initialize pygame
+pygame.init()
+
+# Define our screen size
+SQUARESIZE = 100
+
+# Define width and height of board
+width = COLUMN_COUNT * SQUARESIZE
+height = (ROW_COUNT + 1) * SQUARESIZE
+
+size = (width, height)
+
+RADIUS = int(SQUARESIZE / 2 - 5)
+
+screen = pygame.display.set_mode(size)
+# Calling function draw_board again
+draw_board(board)
+pygame.display.update()
+
+myfont = pygame.font.SysFont("Montserrat", 75)
 #function checks if the game has reached a terminal state.
 # It returns True if there is a winning move for either player or if no valid moves are remaining
 
@@ -391,10 +415,10 @@ def run_game(algorithm, difficulty):
         if is_valid_location(board, col):
             pygame.time.wait(500)
             row = get_next_open_row(board, col)
-            drop_piece(board, row, col, turn + 1)
+            drop_piece(board, row, col, turn+1 )
 
             if winning_move(board, turn + 1):
-                label = myfont.render(f"AI {turn + 1} wins!", 1, YELLOW if turn == AI else RED)
+                label = myfont.render(f"AI {turn+1 } wins!", 1, YELLOW if turn == AI else RED)
                 screen.blit(label, (40, 10))
                 game_over = True
             elif is_terminal_node(board):  # Check for a draw
