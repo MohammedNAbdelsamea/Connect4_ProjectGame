@@ -15,29 +15,72 @@ YELLOW = (0, 0, 255)
 
 ROW_COUNT = 6
 COLUMN_COUNT = 7
-PLAYER = 0  # Added
-AI = 1
+PLAYER = 1
+AI = 2
+
+# Define our screen size
+SQUARESIZE = 100
+
+# Define width and height of board
+width = COLUMN_COUNT * SQUARESIZE
+height = (ROW_COUNT + 1) * SQUARESIZE
+
+# Initialize pygame
+pygame.init()
+size = (width, height)
+
+RADIUS = int(SQUARESIZE / 2 - 5)
+
+screen = pygame.display.set_mode(size)
 
 minimax_scores_g = []
 minimax_ab_scores_g = []
+
+#function creates a 2D NumPy array representing the game board.
+# It initializes all elements to 0, indicating empty positions
 
 def create_board():
     board = np.zeros((ROW_COUNT, COLUMN_COUNT))
     return board
 
+##################################################################
+
+#This function updates the game board by placing a game piece
+# (either 1 or 2) at the specified row and column.
+
 def drop_piece(board, row, col, piece):
     board[row][col] = piece
 
+##################################################################
+
+
+#This function checks if a given column is a valid move in the current board state.
+# It returns True if the topmost row in the column is empty, indicating a valid move.
+
 def is_valid_location(board, col):
     return board[ROW_COUNT - 1][col] == 0
+
+######################################################################
+
+#function returns the index of the next available row in a given column.
+# It is used to determine the row where a dropped piece will land.
 
 def get_next_open_row(board, col):
     for r in range(ROW_COUNT):
         if board[r][col] == 0:
             return r
 
+######################################################################
+
+#This function prints the current state of the game board to the console.
+
 def print_board(board):
     print(np.flip(board, 0))
+
+#######################################################################
+
+#This function checks if the specified player (identified by the piece value) has won the game.
+# It checks for four consecutive pieces in horizontal, vertical, and diagonal directions
 
 def winning_move(board, piece):
     # Check horizontal locations for win
@@ -68,20 +111,9 @@ def winning_move(board, piece):
                 c + 3] == piece:
                 return True
 
-# Define our screen size
-SQUARESIZE = 100
-
-# Define width and height of board
-width = COLUMN_COUNT * SQUARESIZE
-height = (ROW_COUNT + 1) * SQUARESIZE
-
-# Initialize pygame
-pygame.init()
-size = (width, height)
-
-RADIUS = int(SQUARESIZE / 2 - 5)
-
-screen = pygame.display.set_mode(size)
+##############################################################################
+# function draws the game board using the Pygame library.
+# It creates a graphical representation of the board using rectangles and circles of appropriate colors.
 
 def draw_board(board):
     for c in range(COLUMN_COUNT):
@@ -100,6 +132,11 @@ def draw_board(board):
                 int(c * SQUARESIZE + SQUARESIZE / 2), height - int(r * SQUARESIZE + SQUARESIZE / 2)), RADIUS)
     pygame.display.update()
 
+#############################################################################
+
+#This function evaluates a window of four consecutive positions on the board.
+# It assigns a score based on the number and arrangement of pieces in the window, favoring the specified player.
+
 def evaluate_window(window, piece):
     score = 0
     opp_piece = 1 if piece == 2 else 2
@@ -115,6 +152,11 @@ def evaluate_window(window, piece):
         score -= 4
 
     return score
+
+#############################################################################
+
+# This function assigns a score to the current board position for a given player.
+# It evaluates the score based on the player's pieces' arrangement and potential winning positions
 
 def score_position(board, piece):
     score = 0
@@ -152,6 +194,10 @@ def score_position(board, piece):
 
     return score
 
+###########################################################################
+
+#function returns a list of valid columns where a piece can be dropped in the current board state
+
 def get_valid_locations(board):
     valid_locations = []
     for col in range(COLUMN_COUNT):
@@ -159,8 +205,15 @@ def get_valid_locations(board):
             valid_locations.append(col)
     return valid_locations
 
+############################################################################
+
+#function checks if the game has reached a terminal state.
+# It returns True if there is a winning move for either player or if no valid moves are remaining
+
 def is_terminal_node(board):
     return winning_move(board, 1) or winning_move(board, 2) or len(get_valid_locations(board)) == 0
+
+#############################################################################
 
 def minimax(board, depth, maximizing_player):
     valid_locations = get_valid_locations(board)
@@ -263,7 +316,7 @@ myfont = pygame.font.SysFont("Montserrat", 75)
 #start_time = time.time()
 
 def run_game(algorithm, difficulty):
-    # Your game logic here
+
 
     board = create_board()
 
