@@ -15,8 +15,8 @@ YELLOW = (0, 0, 255)
 
 ROW_COUNT = 6
 COLUMN_COUNT = 7
-PLAYER = 1
-AI = 2
+PLAYER = 0
+AI = 1
 
 # # Define our screen size
 # SQUARESIZE = 100
@@ -346,7 +346,7 @@ def run_game(algorithm, difficulty):
 
     # Game loop
     game_over = False
-    turn = random.choice([1, 2])
+    turn = random.choice([0, 1])
     start_time = time.time()
     while not game_over:
         for event in pygame.event.get():
